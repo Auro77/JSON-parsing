@@ -11,96 +11,97 @@
 			
 			if(Object.keys(jsonObj.Mainline.Table).length > 1 && theBegin.length >= 1 && theBegin[0] != "")
 			{
-				html_text="<html><head><title>Top Trucking Companies</title></head><body>";
-				html_text+="<table border='2'>";
+				html_text = "<html><head><title>Top Trucking Companies</title></head><body>";
+				html_text += "<table border='2'>";
 
-				firstLine=jsonObj.Mainline.Table.Header.Data; 
-				html_text+="<tbody>";
-				html_text+="<tr>";
-				x=0; y=0;
+				firstLine = jsonObj.Mainline.Table.Header.Data; 
+				html_text += "<tbody>";
+				html_text += "<tr>";
+				x = 0; y = 0;
 				
-				for(i=0;i<firstLine.length;i++)
+				for(i = 0; i < firstLine.length; i++)
 				{
-					header=firstLine[i];
-					html_text+="<th>"+header+"</th>";
+					header = firstLine[i];
+					html_text += "<th>" + header + "</th>";
 				}
 				
-				html_text+="</tr>";
+				html_text += "</tr>";
 			
 				
-					for(i=0;i<theBegin.length;i++)
+					for(i = 0; i < theBegin.length; i++)
 					{
-						html_text+="<tr>";
+						html_text += "<tr>";
 						truckNodeList =  theBegin[i];
 						
 						var truck_keys = Object.keys(truckNodeList);
 
 						
-							for(j=0;j<truck_keys.length;j++){
+							for(j = 0; j < truck_keys.length; j++){
 								prop = truck_keys[j];
 								
-								if(prop=="Hubs")
+								if(prop == "Hubs")
 								{	
-									html_text+="<td>";
+									html_text += "<td>";
 									add1 = truckNodeList.Hubs;
 									
 									checkHub = Object.keys(add1).length;
 									
-									if(checkHub>0){
+									if(checkHub > 0){
 										hq = add1.Hub;
-										//console.log(hq);
-										if(hq.length==0)
-											html_text+="</td>";
+										
+										if( hq.length == 0)
+											html_text += "</td>";
 										else
 											{	
-												html_text+="<ul>";
-												for(k=0;k<hq.length;k++){
-													x=hq[k];
-													if(x==null)
+												html_text += "<ul>";
+												for(k = 0; k < hq.length; k++){
+													x = hq[k];
+													if(x == null)
 														x="";
-													//	console.log(x);
-													
-														if(k==0)
-															html_text+="<b><li>"+ x + "</li></b>";
+														
+														if(k == 0)
+															html_text += "<b><li>" + x + "</li></b>";
 														else
-															html_text+="<li>"+ x + "</li>";
+															html_text += "<li>" + x + "</li>";
 												}
-											html_text+="</ul></td>";
+											html_text += "</ul></td>";
 										}
 									}
 									else
-										html_text+="</td>";
+										html_text += "</td>";
 								}
 								else
-								{	if(truckNodeList[prop]==null)
-										truckNodeList[prop]="";
-									if(prop=="HomePage")
-										html_text+="<td><a href="+ truckNodeList[prop] +">"+truckNodeList[prop] +"</a></td>";
+								{
+									if(truckNodeList[prop] == null)
+										truckNodeList[prop] = "";
+										
+									if(prop == "HomePage")
+										html_text += "<td><a href=" + truckNodeList[prop] + ">" + truckNodeList[prop] +"</a></td>";
 									else
-										if(prop=="Logo")
+										if(prop == "Logo")
 											{
 											
-												html_text+="<td><img src="+ truckNodeList[prop]  +" width="+250+" height="+120+"></td>";
+												html_text += "<td><img src=" + truckNodeList[prop] + " width="+250 + " height=" + 120 + "></td>";
 											}
 										else
-											html_text+="<td>"+ truckNodeList[prop] +"</td>";
+											html_text += "<td>" + truckNodeList[prop] + "</td>";
 								}
 
 							}
 							
-							html_text+="</tr>";
+							html_text += "</tr>";
 					}
 				
 
-				html_text+="</tbody>";
-				html_text+="</table>";
-				html_text+="</body></html>";
-				flag=0;
+				html_text += "</tbody>";
+				html_text += "</table>";
+				html_text += "</body></html>";
+				flag = 0;
 			}
 			else
 			{
 				alert("No Trucking Companies");
-				flag=1;
+				flag = 1;
 			}
 				 
 		}
@@ -109,21 +110,22 @@
 		function viewJSON(what)
 		{
 			var URL = what.URL.value;
-				if(URL==""){
+				if(URL == ""){
 					alert("Filename cannot be empty!");
 				}
 				else{
-					xmlhttp=new XMLHttpRequest();
+					xmlhttp = new XMLHttpRequest();
 					
 					xmlhttp.onreadystatechange = function() {
 						if (this.readyState == 4 && this.status == 200) 
 						{
 								try{
-									jsonObj= JSON.parse(xmlhttp.responseText);
-									jsonObj.onload=generateHTML(jsonObj);
-									if(flag!=1)
+									jsonObj = JSON.parse(xmlhttp.responseText);
+									jsonObj.onload = generateHTML(jsonObj);
+									
+									if(flag != 1)
 									{
-										hWin = window.open("", "_blank", "height=800,width=970,scrollbars=yes");
+										hWin = window.open("", "_blank", "height=800, width=970, scrollbars=yes");
 										hWin.document.write(html_text);
 										hWin.document.close();
 									}									
@@ -136,13 +138,13 @@
 						else 
 							if(this.status==404)
 							{
-								alert("{"+xmlhttp.status+"} Page not Found");
+								alert("{" + xmlhttp.status + "} Page not Found");
 							}	
 						
 								
 					  };
 						
-					xmlhttp.open("GET",URL,false); // "synchronous"
+					xmlhttp.open("GET", URL, false); // "synchronous"
 					xmlhttp.send();
 					
 				}
