@@ -1,165 +1,13 @@
 <html>
 	<head>
-		<title>Homework 4</title>
-		<script>
-
-		function generateHTML(jsonObj)
-		 {
-			root = jsonObj.DocumentElement;
-			html_text = "";
-			theBegin = jsonObj.Mainline.Table.Row;
-			
-			if(Object.keys(jsonObj.Mainline.Table).length > 1 && theBegin.length >= 1 && theBegin[0] != "")
-			{
-				html_text = "<html><head><title>Top Trucking Companies</title></head><body>";
-				html_text += "<table border='2'>";
-
-				firstLine = jsonObj.Mainline.Table.Header.Data; 
-				html_text += "<tbody>";
-				html_text += "<tr>";
-				x = 0; y = 0;
-				
-				for(i = 0; i < firstLine.length; i++)
-				{
-					header = firstLine[i];
-					html_text += "<th>" + header + "</th>";
-				}
-				
-				html_text += "</tr>";
-			
-				
-					for(i = 0; i < theBegin.length; i++)
-					{
-						html_text += "<tr>";
-						truckNodeList =  theBegin[i];
-						
-						var truck_keys = Object.keys(truckNodeList);
-
-						
-							for(j = 0; j < truck_keys.length; j++){
-								prop = truck_keys[j];
-								
-								if(prop == "Hubs")
-								{	
-									html_text += "<td>";
-									add1 = truckNodeList.Hubs;
-									
-									checkHub = Object.keys(add1).length;
-									
-									if(checkHub > 0){
-										hq = add1.Hub;
-										
-										if( hq.length == 0)
-											html_text += "</td>";
-										else
-											{	
-												html_text += "<ul>";
-												for(k = 0; k < hq.length; k++){
-													x = hq[k];
-													if(x == null)
-														x="";
-														
-														if(k == 0)
-															html_text += "<b><li>" + x + "</li></b>";
-														else
-															html_text += "<li>" + x + "</li>";
-												}
-											html_text += "</ul></td>";
-										}
-									}
-									else
-										html_text += "</td>";
-								}
-								else
-								{
-									if(truckNodeList[prop] == null)
-										truckNodeList[prop] = "";
-										
-									if(prop == "HomePage")
-										html_text += "<td><a href=" + truckNodeList[prop] + ">" + truckNodeList[prop] +"</a></td>";
-									else
-										if(prop == "Logo")
-											{
-											
-												html_text += "<td><img src=" + truckNodeList[prop] + " width="+250 + " height=" + 120 + "></td>";
-											}
-										else
-											html_text += "<td>" + truckNodeList[prop] + "</td>";
-								}
-
-							}
-							
-							html_text += "</tr>";
-					}
-				
-
-				html_text += "</tbody>";
-				html_text += "</table>";
-				html_text += "</body></html>";
-				flag = 0;
-			}
-			else
-			{
-				alert("No Trucking Companies");
-				flag = 1;
-			}
-				 
-		}
-
-
-		function viewJSON(what)
-		{
-			var URL = what.URL.value;
-				if(URL == ""){
-					alert("Filename cannot be empty!");
-				}
-				else{
-					xmlhttp = new XMLHttpRequest();
-					
-					xmlhttp.onreadystatechange = function() {
-						if (this.readyState == 4 && this.status == 200) 
-						{
-								try{
-									jsonObj = JSON.parse(xmlhttp.responseText);
-									jsonObj.onload = generateHTML(jsonObj);
-									
-									if(flag != 1)
-									{
-										hWin = window.open("", "_blank", "height=800, width=970, scrollbars=yes");
-										hWin.document.write(html_text);
-										hWin.document.close();
-									}									
-								}
-								catch(e){
-									alert("Corrupt File detected!");
-								}								
-								
-						}
-						else 
-							if(this.status==404)
-							{
-								alert("{" + xmlhttp.status + "} Page not Found");
-							}	
-						
-								
-					  };
-						
-					xmlhttp.open("GET", URL, false); // "synchronous"
-					xmlhttp.send();
-					
-				}
-		}
-		</script>
 		 
 		<style>
-			.container
-			{
+			.container{
 				text-align:center;
 				margin-top:100px;
 			}
 			
-			#query
-			{
+			#query{
 				margin-top:20px;
 				border:0.5px solid black;
 				border-radius: 3px;
@@ -168,8 +16,7 @@
 				padding-right:10px;
 			}
 			
-			#in
-			{
+			#fileName{
 				padding:5px;
 			}
 		</style>
@@ -177,16 +24,152 @@
 	</head>
 	
 	<body>
+	
 		<div class="container">
-			<h3>Enter URL for Trucking List JSON File </h3>
-			
+			<h3>Enter URL for Trucking List JSON File </h3>			
 			<form name="myform" method="POST" id="location">
-				<input id="in" type="text" name="URL" maxlength="255" size="30" value="truckinglist.json" />
-				<br/>
+				<input id="fileName" type="text" name="URL" maxlength="255" size="30" value="truckinglist.json" />
+				<br>
 				<input id="query" type="button" name="submit" value="Submit Query" onClick="viewJSON(this.form)" />
-			</form>
-			
+			</form>			
 		</div>
+		
+		<script>
+
+		function generateHTML(jsonObj){
+			var root = jsonObj.DocumentElement;
+			html_text = "";
+			var checkRow = jsonObj.Mainline.Table.Row;
+			
+			if(Object.keys(jsonObj.Mainline.Table).length > 1 && checkRow.length >= 1 && checkRow[0] != ""){
+				html_text = "<html><head><title>Top Trucking Companies</title></head><body>";
+				html_text += "<table border = '2'>";
+
+				var firstData = jsonObj.Mainline.Table.Header.Data; 
+				html_text += "<tbody>";
+				html_text += "<tr>";
+				x = 0; y = 0;
+				
+				for(var i = 0; i < firstData.length; i++){
+					header = firstData[i];
+					html_text += "<th>" + header + "</th>";
+				}
+				
+				html_text += "</tr>";
+			
+				for(var i = 0; i < checkRow.length; i++){
+					html_text += "<tr>";
+					var truckNodeList =  checkRow[i];
+						
+					var truck_keys = Object.keys(truckNodeList);
+						
+					for(j = 0; j < truck_keys.length; j++){
+						var prop = truck_keys[j];
+								
+						if(prop == "Hubs"){	
+							html_text += "<td>";
+							var hubList = truckNodeList.Hubs;
+									
+							var checkHub = Object.keys(hubList).length;
+									
+							if(checkHub > 0){
+								var totalHubs = hubList.Hub;
+										
+								if( totalHubs.length == 0)
+									html_text += "</td>";
+								else{	
+									html_text += "<ul>";
+													
+									for(k = 0; k < totalHubs.length; k++){
+										x = totalHubs[k];
+										
+										if(x == null)
+											x = "";
+															
+										if(k == 0)
+											html_text += "<b><li>" + x + "</li></b>";
+										else
+											html_text += "<li>" + x + "</li>";
+									}
+									
+									html_text += "</ul></td>";
+								}
+							}
+							else
+								html_text += "</td>";		
+						}
+						else{
+							if(truckNodeList[prop] == null)
+								truckNodeList[prop] = "";
+										
+							if(prop == "HomePage")
+								html_text += "<td><a href=" + truckNodeList[prop] + ">" + truckNodeList[prop] +"</a></td>";
+							else
+								if(prop == "Logo"){
+									html_text += "<td><img src=" + truckNodeList[prop] + " width="+250 + " height=" + 120 + "></td>";
+								}
+								else
+									html_text += "<td>" + truckNodeList[prop] + "</td>";
+						}
+
+					}
+							
+					html_text += "</tr>";
+				}
+				
+				html_text += "</tbody>";
+				html_text += "</table>";
+				html_text += "</body></html>";
+				flag = 0;
+				
+			}
+			else{
+				alert("No Trucking Companies");
+				flag = 1;
+			}
+				 
+		}
+
+		function viewJSON(what){
+			var URL = what.URL.value;
+				
+			if(URL == ""){
+				alert("Filename cannot be empty!");
+			}
+			else{
+				xmlhttp = new XMLHttpRequest();
+					
+				xmlhttp.onreadystatechange = function() {
+						
+				if (this.readyState == 4 && this.status == 200){
+					try{
+						jsonObj = JSON.parse(xmlhttp.responseText);
+						jsonObj.onload = generateHTML(jsonObj);
+									
+						if(flag != 1){
+							hWin = window.open("", "_blank", "height=800, width=970, scrollbars=yes");
+							hWin.document.write(html_text);
+							hWin.document.close();
+						}									
+					}
+					catch(e){
+						alert("Corrupt File detected!");
+					}								
+							
+				}
+				else 
+					if(this.status == 404){
+						alert("{" + xmlhttp.status + "} Page not Found");
+					}					
+				};
+						
+				xmlhttp.open("GET", URL, false); 
+				xmlhttp.send();					
+			}
+		}
+		
+		</script>
+		
 	</body>
 	
 </html>
